@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AZNavigationController
 
 class ViewController: UIViewController {
 
@@ -27,7 +28,10 @@ class ViewController: UIViewController {
 extension ViewController {
     
     @IBAction func testButtonAction(_ sender: Any) {
-        print("testButtonAction")
+        let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+        let vc = storyboard.instantiateViewController(withIdentifier: "ChildViewController")
+        let nc = AZNavigationController(rootViewController: vc)
+        self.present(nc, animated: true, completion: nil)
     }
     
 }
