@@ -23,11 +23,9 @@ class ChildViewController: UIViewController {
         let count = nc.viewControllers.count
         
         if count == 1 {
-            self.view.backgroundColor = UIColor.lightGray
+            self.title = "Root"
         } else {
-            let colors: [UIColor] = [.red, .orange, .yellow, .green, .blue, .brown, .purple]
-            let index = (count - 2) % colors.count
-            self.view.backgroundColor = colors[index]
+            self.title = "Page " + String(format: "%d", count - 1)
         }
     }
     

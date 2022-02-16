@@ -68,7 +68,6 @@ open class AZNavigationController: UINavigationController {
 extension AZNavigationController {
     func createPopControl(_ index: Int) -> AZPopControl {
         var frame = navigationBar.frame
-//        frame.origin.x = positionPopControl(index)
         frame.size.width = itemWidth
         return AZPopControl(frame: frame)
     }
@@ -92,8 +91,6 @@ extension AZNavigationController {
         viewController.navigationItem.backButtonTitle = ""
         
         super.pushViewController(viewController, animated: animated)
-        
-        viewController.title = "가나다라마바사아"
         
         if animated {
             if let coordinator = transitionCoordinator {
