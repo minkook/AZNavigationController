@@ -1,6 +1,6 @@
 # AZNavigationController
 
-[![CI Status](https://img.shields.io/travis/mkyoo/AZNavigationController.svg?style=flat)](https://travis-ci.org/mkyoo/AZNavigationController)
+[![CI Status](https://img.shields.io/travis/minkook/AZNavigationController.svg?style=flat)](https://travis-ci.org/minkook/AZNavigationController)
 [![Version](https://img.shields.io/cocoapods/v/AZNavigationController.svg?style=flat)](https://cocoapods.org/pods/AZNavigationController)
 [![License](https://img.shields.io/cocoapods/l/AZNavigationController.svg?style=flat)](https://cocoapods.org/pods/AZNavigationController)
 [![Platform](https://img.shields.io/cocoapods/p/AZNavigationController.svg?style=flat)](https://cocoapods.org/pods/AZNavigationController)
@@ -22,7 +22,7 @@ pod 'AZNavigationController'
 
 ## Author
 
-mkyoo, manguksmediawill@gmail.com
+minkook, manguks@gmail.com
 
 ## License
 
