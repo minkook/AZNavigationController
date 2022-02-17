@@ -48,7 +48,9 @@ class AZPopControl: UIControl {
         imageView.image = images[0]
         imageView.animationImages = images
         
-        imageView.frame = CGRect(x: (bounds.width - imageWidth)/2, y: bounds.height - imageHeight, width: imageWidth, height: imageHeight)
+        let x = (bounds.width - AZConfig.PopControlItem_ImageWidth) / 2
+        let y = bounds.height - AZConfig.PopControlItem_ImageHeight
+        imageView.frame = CGRect(x: x, y: y, width: AZConfig.PopControlItem_ImageWidth, height: AZConfig.PopControlItem_ImageHeight)
         imageView.animationDuration = 0.35
         imageView.animationRepeatCount = 0
         

@@ -51,9 +51,6 @@ open class AZNavigationController: UINavigationController {
     
     //-----------------------------------------------------------------------------
     // MARK: control
-    private let itemWidth = 44.0
-    private let itemLimitCount = 5
-    
     private lazy var underline: UIView = {
         let height = 8.0
         var frame = navigationBar.frame
@@ -74,7 +71,7 @@ open class AZNavigationController: UINavigationController {
 extension AZNavigationController {
     
     func positionUnderline(_ index: Int) -> CGFloat {
-        return controlManager.positionPopControl(index) + (itemWidth/2)
+        return controlManager.positionPopControl(index) + (AZConfig.PopControlItem_Width/2)
     }
 }
 
@@ -106,7 +103,7 @@ extension AZNavigationController {
     
     private func validControl() -> Bool {
         let count = viewControllers.count
-        if count == 1 || count > itemLimitCount + 1 {
+        if count == 1 || count > AZConfig.PopControlItem_LimitCount + 1 {
             return false
         }
         return true

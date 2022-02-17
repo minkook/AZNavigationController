@@ -24,7 +24,10 @@ class AZPopControlManager {
     }
     
     public func positionPopControl(_ index: Int) -> CGFloat {
-        return navigationBarFrame.origin.x + backItemWidth + ((itemWidth + itemSpacing) * CGFloat(index))
+        var x = navigationBarFrame.origin.x
+        x += AZConfig.NavigationBarBackItem_Width
+        x += ((AZConfig.PopControlItem_Width + AZConfig.PopControlItem_Spacing) * CGFloat(index))
+        return x
     }
     
     public func deletePopControls(_ index: Int, animated: Bool) {
@@ -35,9 +38,6 @@ class AZPopControlManager {
     
     
     // MARK: - private
-    private let itemWidth = 44.0
-    private let backItemWidth = 44.0
-    private let itemSpacing = 0.0//10.0
     private var controls: Array = [AZPopControl]()
     
 }
@@ -47,7 +47,7 @@ extension AZPopControlManager {
     
     private func createPopControl() -> AZPopControl {
         var frame = navigationBarFrame
-        frame.size.width = itemWidth
+        frame.size.width = AZConfig.PopControlItem_Width
         
         let control = AZPopControl(frame: frame)
         controls.append(control)
