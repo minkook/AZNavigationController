@@ -39,14 +39,20 @@ open class AZNavigationController: UINavigationController {
     
     private func setup() {
         modalPresentationStyle = .fullScreen
+        
+        controlManager.didEndTrackingNeedPopBlock = { [weak self] index in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                let vc = self.viewControllers[index]
+                let _ = self.popToViewController(vc, animated: true)
+            }
+        }
     }
     
     //-----------------------------------------------------------------------------
     // MARK: control
-    private let itemLimitCount = 5
-    private let backItemWidth = 44.0
     private let itemWidth = 44.0
-    private let itemSpacing = 0.0//10.0
+    private let itemLimitCount = 5
     
     private lazy var underline: UIView = {
         let height = 8.0
@@ -59,36 +65,16 @@ open class AZNavigationController: UINavigationController {
         return underline
     }()
     
-    private var popControls: Array = [AZPopControl]()
+    private let controlManager = AZPopControlManager()
 }
 
 
 //-----------------------------------------------------------------------------
 // MARK: - private
 extension AZNavigationController {
-    func createPopControl(_ index: Int) -> AZPopControl {
-        var frame = navigationBar.frame
-        frame.size.width = itemWidth
-        
-        let popControl = AZPopControl(frame: frame)
-        
-        popControl.didEndTrackingNeedPopBlock = { [weak self] in
-            guard let self = self else { return }
-            DispatchQueue.main.async {
-                let vc = self.viewControllers[index]
-                let _ = self.popToViewController(vc, animated: true)
-            }
-        }
-        
-        return popControl
-    }
-    
-    func positionPopControl(_ index: Int) -> CGFloat {
-        return navigationBar.frame.origin.x + backItemWidth + ((itemWidth + itemSpacing) * CGFloat(index))
-    }
     
     func positionUnderline(_ index: Int) -> CGFloat {
-        return positionPopControl(index) + (itemWidth/2)
+        return controlManager.positionPopControl(index) + (itemWidth/2)
     }
 }
 
@@ -129,6 +115,8 @@ extension AZNavigationController {
     private func didPushCore(_ animated: Bool) {
         if !validControl() { return }
         
+        controlManager.navigationBarFrame = navigationBar.frame
+        
         let index = viewControllers.count - 2
         let isFirst = index == 0
         
@@ -136,19 +124,15 @@ extension AZNavigationController {
             view.addSubview(self.underline)
         }
         
-        let popControl = createPopControl(index)
+        let popControl = controlManager.newPopControl(animated: animated)
         view.addSubview(popControl)
-        popControls.append(popControl)
         
         let underlineWidth = positionUnderline(index)
         if animated {
-            popControl.frame.origin.x = positionPopControl(index-1)
             UIView.animate(withDuration: UINavigationControllerHideShowBarDuration) {
                 self.underline.frame.size.width = underlineWidth
-                popControl.frame.origin.x = self.positionPopControl(index)
             }
         } else {
-            popControl.frame.origin.x = positionPopControl(index)
             underline.frame.size.width = underlineWidth
         }
     }
@@ -184,36 +168,26 @@ extension AZNavigationController {
     }
     
     private func didPopCore(_ animated: Bool) {
-        if popControls.count < self.viewControllers.count {
+        if controlManager.count < self.viewControllers.count {
             return
         }
         
         let index = viewControllers.count - 1
         let isFirst = index == 0
-        let removeControls = popControls[index...]
+        
+        controlManager.deletePopControls(index, animated: animated)
             
         if animated {
 
             UIView.animate(withDuration: UINavigationControllerHideShowBarDuration) {
-                for control in removeControls {
-                    control.frame.origin.x = self.navigationBar.frame.maxX
-                }
                 self.underline.frame.size.width = self.positionUnderline(index - 1)
             } completion: { isFinish in
-                for control in removeControls {
-                    control.removeFromSuperview()
-                }
-                self.popControls.removeSubrange(index...)
                 if isFirst {
                     self.underline.removeFromSuperview()
                 }
             }
 
         } else {
-            for control in removeControls {
-                control.removeFromSuperview()
-            }
-            self.popControls.removeSubrange(index...)
             underline.frame.size.width = positionUnderline(index - 1)
             if isFirst {
                 self.underline.removeFromSuperview()

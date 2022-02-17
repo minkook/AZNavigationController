@@ -25,6 +25,7 @@ class AZPopControl: UIControl {
     
     //-----------------------------------------------------------------------------
     // MARK: Public
+    public var didContinueTrackingBlock: (() -> Void)?
     public var didEndTrackingNeedPopBlock: (() -> Void)?
     
     //
@@ -34,10 +35,6 @@ class AZPopControl: UIControl {
     private var originFrame: CGRect = .zero
     
     private func setup() {
-        
-//        backgroundColor = .green
-        
-        
         let imageView = UIImageView()
         var images = [UIImage]()
         
