@@ -90,6 +90,8 @@ extension AZPopControlManager {
         let control = AZPopControl(frame: frame, type: .allCases.randomElement()!)
         controls.append(control)
         
+        moveTracking(control)
+        
         control.didEndTrackingNeedPopBlock = {
             guard let index = self.controls.firstIndex(of: control) else { return }
             if let block = self.didEndTrackingNeedPopBlock {
@@ -100,10 +102,36 @@ extension AZPopControlManager {
         return control
     }
     
+    private func moveTracking(_ control: AZPopControl) {
+        guard var index = self.controls.firstIndex(of: control) else { return }
+        
+        index = index + 1
+        
+        control.didContinueTrackingBlock = { vector in
+            let moveControls = self.controls[index...]
+            for moveControl in moveControls {
+                let x = max(moveControl.originFrame.origin.x, (moveControl.originFrame.origin.x + vector.dx))
+                moveControl.frame.origin.x = x
+            }
+        }
+        
+        control.didEndTrackingBlock = { isPop in
+            let moveControls = self.controls[index...]
+            UIView.animate(withDuration: UINavigationControllerHideShowBarDuration) {
+                for moveControl in moveControls {
+                    let x = isPop ? moveControl.trackMaxPosition : moveControl.trackMinPosition
+                    moveControl.frame.origin.x = x
+                }
+            }
+        }
+    }
+    
     private func adjustPosition(_ control: AZPopControl, index: Int, animated: Bool) {
         
+        control.originFrame.origin.x = self.positionPopControl(index)
+        
         let excute = {
-            control.frame.origin.x = self.positionPopControl(index)
+            control.frame.origin.x = control.originFrame.origin.x
             self._underlineView.frame.size.width = self.positionUnderline(index)
         }
         

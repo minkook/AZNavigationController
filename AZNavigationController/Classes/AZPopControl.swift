@@ -30,18 +30,39 @@ class AZPopControl: UIControl {
     }
     
     
+    // origin frame
+    public var originFrame: CGRect = .zero
+    
+    
     //-----------------------------------------------------------------------------
-    // MARK: public
-    public var didContinueTrackingBlock: (() -> Void)?
+    // MARK: track
+    
+    // track max position
+    public var trackMaxPosition: CGFloat {
+        get { return UIScreen.main.bounds.width + originFrame.width }
+    }
+    
+    
+    // track min position
+    public var trackMinPosition: CGFloat {
+        get { return originFrame.origin.x }
+    }
+    
+    
+    // track handler
+    public var didContinueTrackingBlock: ((_ vector: CGVector) -> Void)?
+    public var didEndTrackingBlock: ((_ isPop: Bool) -> Void)?
     public var didEndTrackingNeedPopBlock: (() -> Void)?
     
     
     //-----------------------------------------------------------------------------
     // MARK: private
     private var startPoint: CGPoint?
-    private var originFrame: CGRect = .zero
     
     private func setup(_ type: AZPopControlImageType) {
+        
+        originFrame = frame
+        
         let imageView = UIImageView()
         var images = [UIImage]()
         
@@ -88,9 +109,6 @@ extension AZPopControl {
     
     override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
         startPoint = touch.location(in: superview)
-        if originFrame == .zero {
-            originFrame = frame
-        }
         return true
     }
     
@@ -107,6 +125,8 @@ extension AZPopControl {
             underlineView.frame.size.width = vector.dx
         }
         
+        if let block = didContinueTrackingBlock { block(vector) }
+        
         return true
     }
     
@@ -117,10 +137,10 @@ extension AZPopControl {
         let total = UIScreen.main.bounds.width - originFrame.midX
         let limit = originFrame.midX + (total * ratio)
         
-        if frame.midX > limit {
-            let maxPosition = UIScreen.main.bounds.width + originFrame.width
-            UIView.animate(withDuration: 0.4) {
-                self.frame.origin.x = maxPosition
+        let isPop = frame.midX > limit
+        if isPop {
+            UIView.animate(withDuration: UINavigationControllerHideShowBarDuration) {
+                self.frame.origin.x = self.trackMaxPosition
                 self.underlineView.frame.origin.x = -(self.originFrame.width + total)
                 self.underlineView.frame.size.width = total
             } completion: { isFinish in
@@ -130,11 +150,13 @@ extension AZPopControl {
                 }
             }
         } else {
-            UIView.animate(withDuration: 0.4) {
-                self.frame.origin.x = self.originFrame.origin.x
+            UIView.animate(withDuration: UINavigationControllerHideShowBarDuration) {
+                self.frame.origin.x = self.trackMinPosition
                 self.underlineView.frame.origin.x = (self.originFrame.width/2)
                 self.underlineView.frame.size.width = 0
             }
         }
+        
+        if let block = didEndTrackingBlock { block(isPop) }
     }
 }
