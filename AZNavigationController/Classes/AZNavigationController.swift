@@ -69,7 +69,18 @@ extension AZNavigationController {
     func createPopControl(_ index: Int) -> AZPopControl {
         var frame = navigationBar.frame
         frame.size.width = itemWidth
-        return AZPopControl(frame: frame)
+        
+        let popControl = AZPopControl(frame: frame)
+        
+        popControl.didEndTrackingNeedPopBlock = { [weak self] in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                let vc = self.viewControllers[index]
+                let _ = self.popToViewController(vc, animated: true)
+            }
+        }
+        
+        return popControl
     }
     
     func positionPopControl(_ index: Int) -> CGFloat {
@@ -91,18 +102,20 @@ extension AZNavigationController {
         viewController.navigationItem.backButtonTitle = ""
         
         super.pushViewController(viewController, animated: animated)
-        
+        didPush(animated)
+    }
+    
+    private func didPush(_ animated: Bool) {
         if animated {
             if let coordinator = transitionCoordinator {
                 coordinator.animate(alongsideTransition: nil) { _ in
-                    self.didPush(animated)
+                    self.didPushCore(animated)
                 }
             }
         }
         else {
-            self.didPush(animated)
+            self.didPushCore(animated)
         }
-        
     }
     
     private func validControl() -> Bool {
@@ -113,13 +126,11 @@ extension AZNavigationController {
         return true
     }
     
-    private func didPush(_ animated: Bool) {
+    private func didPushCore(_ animated: Bool) {
         if !validControl() { return }
         
         let index = viewControllers.count - 2
         let isFirst = index == 0
-        
-        print("didPush: \(index)")
         
         if isFirst {
             view.addSubview(self.underline)
@@ -149,49 +160,63 @@ extension AZNavigationController {
 extension AZNavigationController {
     override open func popViewController(animated: Bool) -> UIViewController? {
         let vc = super.popViewController(animated: animated)
-        
+        didPop(animated)
+        return vc
+    }
+    
+    override open func popToViewController(_ viewController: UIViewController, animated: Bool) -> [UIViewController]? {
+        let vcs = super.popToViewController(viewController, animated: animated)
+        didPop(animated)
+        return vcs
+    }
+    
+    private func didPop(_ animated: Bool) {
         if animated {
             if let coordinator = transitionCoordinator {
                 coordinator.animate(alongsideTransition: nil) { _ in
-                    self.didPop(animated)
+                    self.didPopCore(animated)
                 }
             }
         }
         else {
-            self.didPop(animated)
+            self.didPopCore(animated)
         }
-        
-        return vc
     }
     
-    private func didPop(_ animated: Bool) {
-        if popControls.count == self.viewControllers.count, let popControl = popControls.last {
+    private func didPopCore(_ animated: Bool) {
+        if popControls.count < self.viewControllers.count {
+            return
+        }
+        
+        let index = viewControllers.count - 1
+        let isFirst = index == 0
+        let removeControls = popControls[index...]
             
-            let index = viewControllers.count - 1
-            let isFirst = index == 0
-            
-            print("didPop: \(index)")
-            
-            if animated {
-                
-                UIView.animate(withDuration: UINavigationControllerHideShowBarDuration) {
-                    popControl.frame.origin.x = self.navigationBar.frame.maxX
-                    self.underline.frame.size.width = self.positionUnderline(index - 1)
-                } completion: { isFinish in
-                    popControl.removeFromSuperview()
-                    self.popControls.removeLast()
-                    if isFirst {
-                        self.underline.removeFromSuperview()
-                    }
-                }
+        if animated {
 
-            } else {
-                popControl.removeFromSuperview()
-                popControls.removeLast()
-                underline.frame.size.width = positionUnderline(index - 1)
+            UIView.animate(withDuration: UINavigationControllerHideShowBarDuration) {
+                for control in removeControls {
+                    control.frame.origin.x = self.navigationBar.frame.maxX
+                }
+                self.underline.frame.size.width = self.positionUnderline(index - 1)
+            } completion: { isFinish in
+                for control in removeControls {
+                    control.removeFromSuperview()
+                }
+                self.popControls.removeSubrange(index...)
                 if isFirst {
                     self.underline.removeFromSuperview()
                 }
+            }
+
+        } else {
+            for control in removeControls {
+                control.removeFromSuperview()
+            }
+            self.popControls.removeSubrange(index...)
+            underline.frame.size.width = positionUnderline(index - 1)
+            if isFirst {
+                self.underline.removeFromSuperview()
             }
         }
     }
