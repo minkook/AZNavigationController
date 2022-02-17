@@ -39,4 +39,11 @@ struct AZNavigationControllerConfig {
     static let PopControlItem_ImageWidth = 25.0
     static let PopControlItem_ImageHeight = 30.0
     
+    
+    
+    // MARK: - underline
+    
+    // underline size
+    static let PopControlUnderline_Height = 8.0
+    
 }

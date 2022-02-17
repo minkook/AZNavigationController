@@ -51,28 +51,7 @@ open class AZNavigationController: UINavigationController {
     
     //-----------------------------------------------------------------------------
     // MARK: control
-    private lazy var underline: UIView = {
-        let height = 8.0
-        var frame = navigationBar.frame
-        frame.origin.y = frame.maxY - (height/2)
-        frame.size.width = 0
-        frame.size.height = height
-        let underline = UIView(frame: frame)
-        underline.backgroundColor = .black
-        return underline
-    }()
-    
     private let controlManager = AZPopControlManager()
-}
-
-
-//-----------------------------------------------------------------------------
-// MARK: - private
-extension AZNavigationController {
-    
-    func positionUnderline(_ index: Int) -> CGFloat {
-        return controlManager.positionPopControl(index) + (AZConfig.PopControlItem_Width/2)
-    }
 }
 
 
@@ -118,20 +97,11 @@ extension AZNavigationController {
         let isFirst = index == 0
         
         if isFirst {
-            view.addSubview(self.underline)
+            view.addSubview(controlManager.underlineView)
         }
         
         let popControl = controlManager.newPopControl(animated: animated)
         view.addSubview(popControl)
-        
-        let underlineWidth = positionUnderline(index)
-        if animated {
-            UIView.animate(withDuration: UINavigationControllerHideShowBarDuration) {
-                self.underline.frame.size.width = underlineWidth
-            }
-        } else {
-            underline.frame.size.width = underlineWidth
-        }
     }
 }
 
@@ -170,25 +140,6 @@ extension AZNavigationController {
         }
         
         let index = viewControllers.count - 1
-        let isFirst = index == 0
-        
         controlManager.deletePopControls(index, animated: animated)
-            
-        if animated {
-
-            UIView.animate(withDuration: UINavigationControllerHideShowBarDuration) {
-                self.underline.frame.size.width = self.positionUnderline(index - 1)
-            } completion: { isFinish in
-                if isFirst {
-                    self.underline.removeFromSuperview()
-                }
-            }
-
-        } else {
-            underline.frame.size.width = positionUnderline(index - 1)
-            if isFirst {
-                self.underline.removeFromSuperview()
-            }
-        }
     }
 }
