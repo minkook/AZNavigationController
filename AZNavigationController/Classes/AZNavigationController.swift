@@ -49,6 +49,7 @@ open class AZNavigationController: UINavigationController {
         }
     }
     
+    
     //-----------------------------------------------------------------------------
     // MARK: control
     private let controlManager = AZPopControlManager()
@@ -67,6 +68,14 @@ extension AZNavigationController {
         didPush(animated)
     }
     
+    private func validControl() -> Bool {
+        let count = viewControllers.count
+        if count == 1 || count > AZConfig.PopControlItem_LimitCount + 1 {
+            return false
+        }
+        return true
+    }
+    
     private func didPush(_ animated: Bool) {
         if animated {
             if let coordinator = transitionCoordinator {
@@ -78,14 +87,6 @@ extension AZNavigationController {
         else {
             self.didPushCore(animated)
         }
-    }
-    
-    private func validControl() -> Bool {
-        let count = viewControllers.count
-        if count == 1 || count > AZConfig.PopControlItem_LimitCount + 1 {
-            return false
-        }
-        return true
     }
     
     private func didPushCore(_ animated: Bool) {
@@ -109,6 +110,7 @@ extension AZNavigationController {
 //-----------------------------------------------------------------------------
 // MARK: - pop
 extension AZNavigationController {
+    
     override open func popViewController(animated: Bool) -> UIViewController? {
         let vc = super.popViewController(animated: animated)
         didPop(animated)

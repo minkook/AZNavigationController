@@ -36,14 +36,24 @@ struct AZNavigationControllerConfig {
     // MARK: - control item image
     
     // image size
-    static let PopControlItem_ImageWidth = 25.0
-    static let PopControlItem_ImageHeight = 30.0
+    static let PopControlItem_ImageWidth: CGFloat = 25.0
+    static let PopControlItem_ImageHeight: CGFloat = 30.0
     
+    // image resource bundle
+    static let ImageDefaultBundle: Bundle? = {
+        let bundle = Bundle(for: AZNavigationController.self)
+        guard let url = bundle.url(forResource: "AZNavigationController", withExtension: "bundle") else {
+            return bundle
+        }
+        return Bundle(url: url)
+    }()
     
     
     // MARK: - underline
     
     // underline size
-    static let PopControlUnderline_Height = 8.0
+    static let PopControlUnderline_Height: CGFloat = 8.0
+    
+    static let PopControlUnderline_Color: UIColor = .black
     
 }

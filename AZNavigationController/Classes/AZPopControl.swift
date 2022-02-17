@@ -11,6 +11,7 @@ import UIKit
 
 class AZPopControl: UIControl {
     
+    
     //-----------------------------------------------------------------------------
     // MARK: init
     override init(frame: CGRect) {
@@ -23,14 +24,15 @@ class AZPopControl: UIControl {
         setup()
     }
     
+    
     //-----------------------------------------------------------------------------
-    // MARK: Public
+    // MARK: public
     public var didContinueTrackingBlock: (() -> Void)?
     public var didEndTrackingNeedPopBlock: (() -> Void)?
     
-    //
-    private let imageWidth = 25.0
-    private let imageHeight = 30.0
+    
+    //-----------------------------------------------------------------------------
+    // MARK: private
     private var startPoint: CGPoint?
     private var originFrame: CGRect = .zero
     
@@ -40,7 +42,7 @@ class AZPopControl: UIControl {
         
         for i in 0..<20 {
             let name = "run" + String(format: "%02d", i)
-            if let image = UIImage(named: name, in: defaultBundle, compatibleWith: nil) {
+            if let image = UIImage(named: name, in: AZConfig.ImageDefaultBundle, compatibleWith: nil) {
                 images.append(image)
             }
         }
@@ -58,21 +60,23 @@ class AZPopControl: UIControl {
         imageView.startAnimating()
         
         addSubview(imageView)
+        
+        addSubview(underlineView)
     }
     
-    
-    // MARK: -
-    private lazy var defaultBundle: Bundle? = {
-        let bundle = Bundle(for: AZNavigationController.self)
-        guard let url = bundle.url(forResource: "AZNavigationController", withExtension: "bundle") else {
-            return bundle
-        }
-        return Bundle(url: url)
+    private lazy var underlineView: UIView = {
+        let y = bounds.maxY - (AZConfig.PopControlUnderline_Height / 2)
+        let underline = UIView(frame: CGRect(x: 0, y: y, width: 0, height: AZConfig.PopControlUnderline_Height))
+        underline.backgroundColor = .red
+        return underline
     }()
     
 }
 
 
+
+//-----------------------------------------------------------------------------
+// MARK: -
 extension AZPopControl {
     
     override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
@@ -92,6 +96,8 @@ extension AZPopControl {
         
         if vector.dx > 0 {
             frame.origin.x = originFrame.origin.x + vector.dx
+            underlineView.frame.origin.x = (originFrame.width/2) - vector.dx
+            underlineView.frame.size.width = vector.dx
         }
         
         return true
@@ -101,20 +107,26 @@ extension AZPopControl {
         startPoint = nil
         
         let ratio = 0.5
-        let total = UIScreen.main.bounds.width - originFrame.maxX
-        let limit = self.originFrame.minX + (total * ratio)
+        let total = UIScreen.main.bounds.width - originFrame.midX
+        let limit = originFrame.midX + (total * ratio)
         
-        if self.frame.minX > limit {
-            UIView.animate(withDuration: 0.2) {
-                self.frame.origin.x = UIScreen.main.bounds.width
+        if frame.midX > limit {
+            let maxPosition = UIScreen.main.bounds.width + originFrame.width
+            UIView.animate(withDuration: 0.4) {
+                self.frame.origin.x = maxPosition
+                self.underlineView.frame.origin.x = -(self.originFrame.width + total)
+                self.underlineView.frame.size.width = total
             } completion: { isFinish in
+                self.underlineView.frame.size.width = 0
                 if let block = self.didEndTrackingNeedPopBlock {
                     block()
                 }
             }
         } else {
-            UIView.animate(withDuration: 0.2) {
+            UIView.animate(withDuration: 0.4) {
                 self.frame.origin.x = self.originFrame.origin.x
+                self.underlineView.frame.origin.x = (self.originFrame.width/2)
+                self.underlineView.frame.size.width = 0
             }
         }
     }

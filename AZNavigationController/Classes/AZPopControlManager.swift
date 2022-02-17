@@ -10,7 +10,8 @@ import Foundation
 class AZPopControlManager {
     
     
-    // MARK: - public
+    //-----------------------------------------------------------------------------
+    // MARK: public
     public var navigationBarFrame: CGRect = .zero
     
     
@@ -45,7 +46,8 @@ class AZPopControlManager {
     public var didEndTrackingNeedPopBlock: ((_ index: Int) -> Void)?
     
     
-    // MARK: - private
+    //-----------------------------------------------------------------------------
+    // MARK: private
     private var controls: Array = [AZPopControl]()
     
     private lazy var _underlineView: UIView = {
@@ -55,13 +57,15 @@ class AZPopControlManager {
         frame.size.width = 0
         frame.size.height = height
         let underline = UIView(frame: frame)
-        underline.backgroundColor = .black
+        underline.backgroundColor = AZConfig.PopControlUnderline_Color
         return underline
     }()
     
 }
 
 
+//-----------------------------------------------------------------------------
+// MARK: -
 extension AZPopControlManager {
     
     private func positionPopControl(_ index: Int) -> CGFloat {
