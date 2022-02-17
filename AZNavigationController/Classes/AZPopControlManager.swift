@@ -87,7 +87,7 @@ extension AZPopControlManager {
         var frame = navigationBarFrame
         frame.size.width = AZConfig.PopControlItem_Width
         
-        let control = AZPopControl(frame: frame)
+        let control = AZPopControl(frame: frame, type: .allCases.randomElement()!)
         controls.append(control)
         
         control.didEndTrackingNeedPopBlock = {

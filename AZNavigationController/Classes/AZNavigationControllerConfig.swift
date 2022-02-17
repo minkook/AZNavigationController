@@ -10,6 +10,17 @@ import Foundation
 
 typealias AZConfig = AZNavigationControllerConfig
 
+
+enum AZPopControlImageType: String, CaseIterable {
+    case run = "run"
+    case bat = "bat"
+    case dynamic = "dynamic_run"
+    case fly = "fly"
+    case player = "player"
+    case red = "red"
+}
+
+
 struct AZNavigationControllerConfig {
     
     
@@ -21,6 +32,9 @@ struct AZNavigationControllerConfig {
     
     
     // MARK: - control item design
+    
+    // item type
+    static let PopControlImageType: AZPopControlImageType = .run
     
     // item size
     static let PopControlItem_Width: CGFloat = 44.0
@@ -54,6 +68,7 @@ struct AZNavigationControllerConfig {
     // underline size
     static let PopControlUnderline_Height: CGFloat = 8.0
     
-    static let PopControlUnderline_Color: UIColor = .black
+    // underline color
+    static let PopControlUnderline_Color: UIColor = .lightGray
     
 }

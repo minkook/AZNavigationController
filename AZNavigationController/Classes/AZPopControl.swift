@@ -16,12 +16,17 @@ class AZPopControl: UIControl {
     // MARK: init
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setup()
+        setup(AZConfig.PopControlImageType)
+    }
+    
+    public init(frame: CGRect, type: AZPopControlImageType) {
+        super.init(frame: frame)
+        setup(type)
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        setup()
+        setup(AZConfig.PopControlImageType)
     }
     
     
@@ -36,12 +41,12 @@ class AZPopControl: UIControl {
     private var startPoint: CGPoint?
     private var originFrame: CGRect = .zero
     
-    private func setup() {
+    private func setup(_ type: AZPopControlImageType) {
         let imageView = UIImageView()
         var images = [UIImage]()
         
         for i in 0..<20 {
-            let name = "run" + String(format: "%02d", i)
+            let name = type.rawValue + String(format: "%02d", i)
             if let image = UIImage(named: name, in: AZConfig.ImageDefaultBundle, compatibleWith: nil) {
                 images.append(image)
             }
@@ -56,7 +61,9 @@ class AZPopControl: UIControl {
         imageView.animationDuration = 0.35
         imageView.animationRepeatCount = 0
         
-        imageView.transform = CGAffineTransform.init(scaleX: -1.0, y: 1.0)
+        if type == .run {
+            imageView.transform = CGAffineTransform.init(scaleX: -1.0, y: 1.0)
+        }
         imageView.startAnimating()
         
         addSubview(imageView)
