@@ -29,51 +29,62 @@ public struct AZNavigationControllerConfig {
     
     
     
+    //-----------------------------------------------------------------------------
     // MARK: - control item
     
     // control item limit
-    // default 5
+    // default is 5
     public var PopControlItem_LimitCount: Int
     
     
     
+    //-----------------------------------------------------------------------------
     // MARK: - control item design
     
     // item type
-    // default random
+    // default is random
     public var PopControlImageType: AZPopControlImageType
     
     
+    // item type
+    // default is nil
+    // has a higher priority than PopControlImageType
+    public var PopControlImageTypes: [AZPopControlImageType]?
+    
+    
     // item size
-    // default 44.0
+    // default is 44.0
     public var PopControlItem_Width: CGFloat
     
     // item spacingsetup
-    // default 0.0
+    // default is 0.0
     public var PopControlItem_Spacing: CGFloat
     
     
     
+    //-----------------------------------------------------------------------------
     // MARK: - control item image
     
     // image size
-    // default (25.0, 30.0)
+    // default is (25.0, 30.0)
     public var PopControlItem_ImageSize: CGSize
     
     
     
+    //-----------------------------------------------------------------------------
     // MARK: - underline
     
     // underline size
-    // default 4.0
+    // default is 4.0
     public var PopControlUnderline_Height: CGFloat
     
     // underline color
-    // default .lightGray
+    // default is .lightGray
     public var PopControlUnderline_Color: UIColor
     
     
     
+    //-----------------------------------------------------------------------------
     // MARK: - init & private
     
     private init() {

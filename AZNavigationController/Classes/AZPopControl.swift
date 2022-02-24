@@ -16,12 +16,17 @@ class AZPopControl: UIControl {
     // MARK: init
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setup(AZConfig.shared.PopControlImageType)
+        setup()
+    }
+    
+    public init(frame: CGRect, type: AZPopControlImageType) {
+        super.init(frame: frame)
+        setup(type)
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        setup(AZConfig.shared.PopControlImageType)
+        setup()
     }
     
     
@@ -54,7 +59,7 @@ class AZPopControl: UIControl {
     // MARK: private
     private var startPoint: CGPoint?
     
-    private func setup(_ type: AZPopControlImageType) {
+    private func setup(_ type: AZPopControlImageType = AZConfig.shared.PopControlImageType) {
         
         originFrame = frame
         

@@ -15,6 +15,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
 //        AZConfig.shared.PopControlItem_LimitCount = 3
+//        AZConfig.shared.PopControlImageTypes = [.run, .dynamic, .fly]
     }
 
     override func didReceiveMemoryWarning() {

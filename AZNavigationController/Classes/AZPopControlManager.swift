@@ -87,7 +87,14 @@ extension AZPopControlManager {
         var frame = navigationBarFrame
         frame.size.width = AZConfig.shared.PopControlItem_Width
         
-        let control = AZPopControl(frame: frame)
+        let control: AZPopControl
+        let index = controls.count;
+        if let types = AZConfig.shared.PopControlImageTypes, types.count > index {
+            control = AZPopControl(frame: frame, type: types[index])
+        } else {
+            control = AZPopControl(frame: frame)
+        }
+        
         controls.append(control)
         
         moveTracking(control)
