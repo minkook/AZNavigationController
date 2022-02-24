@@ -51,13 +51,13 @@ class AZPopControlManager {
     private var controls: Array = [AZPopControl]()
     
     private lazy var _underlineView: UIView = {
-        let height = AZConfig.PopControlUnderline_Height
+        let height = AZConfig.shared.PopControlUnderline_Height
         var frame = navigationBarFrame
         frame.origin.y = frame.maxY - (height/2)
         frame.size.width = 0
         frame.size.height = height
         let underline = UIView(frame: frame)
-        underline.backgroundColor = AZConfig.PopControlUnderline_Color
+        underline.backgroundColor = AZConfig.shared.PopControlUnderline_Color
         return underline
     }()
     
@@ -71,12 +71,12 @@ extension AZPopControlManager {
     private func positionPopControl(_ index: Int) -> CGFloat {
         var x = navigationBarFrame.origin.x
         x += AZConfig.NavigationBarBackItem_Width
-        x += ((AZConfig.PopControlItem_Width + AZConfig.PopControlItem_Spacing) * CGFloat(index))
+        x += ((AZConfig.shared.PopControlItem_Width + AZConfig.shared.PopControlItem_Spacing) * CGFloat(index))
         return x
     }
     
     private func positionUnderline(_ index: Int) -> CGFloat {
-        return positionPopControl(index) + (AZConfig.PopControlItem_Width / 2)
+        return positionPopControl(index) + (AZConfig.shared.PopControlItem_Width / 2)
     }
 }
 
@@ -85,9 +85,9 @@ extension AZPopControlManager {
     
     private func createPopControl() -> AZPopControl {
         var frame = navigationBarFrame
-        frame.size.width = AZConfig.PopControlItem_Width
+        frame.size.width = AZConfig.shared.PopControlItem_Width
         
-        let control = AZPopControl(frame: frame, type: .allCases.randomElement()!)
+        let control = AZPopControl(frame: frame)
         controls.append(control)
         
         moveTracking(control)

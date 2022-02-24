@@ -70,7 +70,7 @@ extension AZNavigationController {
     
     private func validControl() -> Bool {
         let count = viewControllers.count
-        if count == 1 || count > AZConfig.PopControlItem_LimitCount + 1 {
+        if count == 1 || count > AZConfig.shared.PopControlItem_LimitCount + 1 {
             return false
         }
         return true

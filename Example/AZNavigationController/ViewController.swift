@@ -14,7 +14,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
+//        AZConfig.shared.PopControlItem_LimitCount = 3
     }
 
     override func didReceiveMemoryWarning() {

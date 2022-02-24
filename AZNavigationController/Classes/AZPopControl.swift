@@ -16,17 +16,12 @@ class AZPopControl: UIControl {
     // MARK: init
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setup(AZConfig.PopControlImageType)
-    }
-    
-    public init(frame: CGRect, type: AZPopControlImageType) {
-        super.init(frame: frame)
-        setup(type)
+        setup(AZConfig.shared.PopControlImageType)
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        setup(AZConfig.PopControlImageType)
+        setup(AZConfig.shared.PopControlImageType)
     }
     
     
@@ -76,9 +71,9 @@ class AZPopControl: UIControl {
         imageView.image = images[0]
         imageView.animationImages = images
         
-        let x = (bounds.width - AZConfig.PopControlItem_ImageWidth) / 2
-        let y = bounds.height - AZConfig.PopControlItem_ImageHeight
-        imageView.frame = CGRect(x: x, y: y, width: AZConfig.PopControlItem_ImageWidth, height: AZConfig.PopControlItem_ImageHeight)
+        let x = (bounds.width - AZConfig.shared.PopControlItem_ImageSize.width) / 2
+        let y = bounds.height - AZConfig.shared.PopControlItem_ImageSize.height
+        imageView.frame = CGRect(x: x, y: y, width: AZConfig.shared.PopControlItem_ImageSize.width, height: AZConfig.shared.PopControlItem_ImageSize.height)
         imageView.animationDuration = 0.35
         imageView.animationRepeatCount = 0
         
@@ -93,8 +88,8 @@ class AZPopControl: UIControl {
     }
     
     private lazy var underlineView: UIView = {
-        let y = bounds.maxY - (AZConfig.PopControlUnderline_Height / 2)
-        let underline = UIView(frame: CGRect(x: 0, y: y, width: 0, height: AZConfig.PopControlUnderline_Height))
+        let y = bounds.maxY - (AZConfig.shared.PopControlUnderline_Height / 2)
+        let underline = UIView(frame: CGRect(x: 0, y: y, width: 0, height: AZConfig.shared.PopControlUnderline_Height))
         underline.backgroundColor = .red
         return underline
     }()

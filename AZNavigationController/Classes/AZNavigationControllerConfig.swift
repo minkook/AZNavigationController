@@ -6,12 +6,13 @@
 //
 
 import Foundation
+import UIKit
 
 
-typealias AZConfig = AZNavigationControllerConfig
+public typealias AZConfig = AZNavigationControllerConfig
 
 
-enum AZPopControlImageType: String, CaseIterable {
+public enum AZPopControlImageType: String, CaseIterable {
     case run = "run"
     case bat = "bat"
     case dynamic = "dynamic_run"
@@ -21,37 +22,72 @@ enum AZPopControlImageType: String, CaseIterable {
 }
 
 
-struct AZNavigationControllerConfig {
+public struct AZNavigationControllerConfig {
+    
+    
+    public static var shared = AZNavigationControllerConfig()
+    
     
     
     // MARK: - control item
     
     // control item limit
-    static let PopControlItem_LimitCount: Int = 5
+    // default 5
+    public var PopControlItem_LimitCount: Int
     
     
     
     // MARK: - control item design
     
     // item type
-    static let PopControlImageType: AZPopControlImageType = .run
+    // default random
+    public var PopControlImageType: AZPopControlImageType
+    
     
     // item size
-    static let PopControlItem_Width: CGFloat = 44.0
+    // default 44.0
+    public var PopControlItem_Width: CGFloat
     
-    // item spacing
-    static let PopControlItem_Spacing: CGFloat = 0.0
-    
-    // item left
-    static let NavigationBarBackItem_Width: CGFloat = 44.0
+    // item spacingsetup
+    // default 0.0
+    public var PopControlItem_Spacing: CGFloat
     
     
     
     // MARK: - control item image
     
     // image size
-    static let PopControlItem_ImageWidth: CGFloat = 25.0
-    static let PopControlItem_ImageHeight: CGFloat = 30.0
+    // default (25.0, 30.0)
+    public var PopControlItem_ImageSize: CGSize
+    
+    
+    
+    // MARK: - underline
+    
+    // underline size
+    // default 4.0
+    public var PopControlUnderline_Height: CGFloat
+    
+    // underline color
+    // default .lightGray
+    public var PopControlUnderline_Color: UIColor
+    
+    
+    
+    // MARK: - init & private
+    
+    private init() {
+        PopControlItem_LimitCount = 5
+        PopControlImageType = .allCases.randomElement()!
+        PopControlItem_Width = 44.0
+        PopControlItem_Spacing = 0.0
+        PopControlItem_ImageSize = CGSize(width: 25.0, height: 30.0)
+        PopControlUnderline_Height = 4.0
+        PopControlUnderline_Color = .lightGray
+    }
+    
+    // item left
+    static let NavigationBarBackItem_Width: CGFloat = 44.0
     
     // image resource bundle
     static let ImageDefaultBundle: Bundle? = {
@@ -61,14 +97,5 @@ struct AZNavigationControllerConfig {
         }
         return Bundle(url: url)
     }()
-    
-    
-    // MARK: - underline
-    
-    // underline size
-    static let PopControlUnderline_Height: CGFloat = 8.0
-    
-    // underline color
-    static let PopControlUnderline_Color: UIColor = .lightGray
     
 }
